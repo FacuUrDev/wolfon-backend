@@ -23,5 +23,6 @@ class UserService:
         return await self.user_repository.delete(user_id)
 
     async def list_cards(self, user_id: str) -> Optional[Any]:
-        return await self.user_repository.list_cards(user_id)
+        cards = await self.user_repository.list_cards(user_id)
+        return list(cards)
 

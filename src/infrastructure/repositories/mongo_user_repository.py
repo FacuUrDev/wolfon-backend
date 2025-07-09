@@ -21,4 +21,4 @@ class MongoUserRepository(UserRepository):
         return self.db.users.delete_one({"_id": ObjectId(user_id)})
 
     async def list_cards(self, user_id: str) -> User:
-        return self.db.cards.find({"user_id": ObjectId(user_id)})
+        return self.db.cards.find({"user_id": user_id})
