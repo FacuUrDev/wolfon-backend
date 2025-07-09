@@ -1,3 +1,5 @@
-.*
 tmp/
 .idea
+*.env
+*.html
+*__pycache__*
