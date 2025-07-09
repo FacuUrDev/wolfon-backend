@@ -1,60 +1,38 @@
-from typing import List
-from uuid import UUID
+from fastapi import APIRouter, Body, Response, HTTPException, status
 
-from fastapi import APIRouter, Body, Response
-from fastapi import HTTPException, status, Request
-from fastapi.encoders import jsonable_encoder
-
+from src.application.services.card_service import CardService
 from src.domain.models import Card
+from src.infrastructure.dependencies.database import get_database
+from src.infrastructure.repositories.mongo_card_repository import MongoCardRepository
 
 router = APIRouter()
+card_service = CardService(MongoCardRepository(get_database()))
 
 
 @router.post("/", response_description="Create a new card", status_code=status.HTTP_201_CREATED, response_model=Card)
-def create_card(request: Request, card: Card = Body(...)):
-    card = jsonable_encoder(card)
-    new_card = request.app.database["cards"].insert_one(card)
-    created_card = request.app.database["cards"].find_one(
-        {"_id": new_card.inserted_id}
-    )
-
-    return created_card
-
+async def create_card(card: Card = Body(...)):
+    new_card = await card_service.create_card(card)
+    return new_card
 
 
 @router.get("/{card_id}", response_description="Get a single card by id", response_model=Card)
-def find_card(card_id: str, request: Request):
-    if (card := request.app.database["cards"].find_one({"_id": card_id})) is not None:
+async def find_card(card_id: str):
+    # return await card_service.get_card(card_id)
+    if (card := await card_service.get_card(card_id)) is not None:
+        card['_id'] = card_id
         return card
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Card with ID {id} not found")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Card with ID {card_id} not found")
 
 
-@router.put("/{id}", response_description="Update a card", response_model=Card)
-def update_card(id: str, request: Request, card: Card = Body(...)):
-    # card = {k: v for k, v in card.model_dump(exclude={'id'}).items() if v is not None}
-    card = card.model_dump()
-    if len(card) >= 1:
-        update_result = request.app.database["cards"].update_one(
-            {"_id": id}, {"$set": card}, upsert=True
-        )
-
-        if update_result.modified_count == 0:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Card with ID {id} not found")
-
-    if (
-            existing_card := request.app.database["cards"].find_one({"_id": id})
-    ) is not None:
-        return existing_card
-
+@router.put("/{id}", response_description="Update a card")
+async def update_card(id: str, card: Card = Body(...)):
+    if await card_service.update_card(id, card) is not None:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Card with ID {id} not found")
 
 
 @router.delete("/{id}", response_description="Delete a card")
-def delete_card(id: str, request: Request, response: Response):
-    delete_result = request.app.database["cards"].delete_one({"_id": id})
-
-    if delete_result.deleted_count == 1:
-        response.status_code = status.HTTP_204_NO_CONTENT
-        return response
-
+async def delete_card(id: str):
+    if await card_service.delete_card(id):
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Card with ID {id} not found")
