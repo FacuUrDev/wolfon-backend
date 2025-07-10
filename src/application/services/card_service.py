@@ -2,6 +2,7 @@ from typing import Optional
 
 from src.domain.models import Card
 from src.domain.repositories.card_repository import CardRepository
+from src.infrastructure.logging.logger import log
 
 
 class CardService:
@@ -9,7 +10,7 @@ class CardService:
         self.card_repository = card_repository
 
     async def create_card(self, card: Card) -> Card:
-        # Lógica de negocio aquí
+        log.info("Creating new card", card=card)
         return await self.card_repository.create(card)
 
     async def get_card(self, card_id: str) -> Optional[Card]:
