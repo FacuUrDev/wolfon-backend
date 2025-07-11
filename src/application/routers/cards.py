@@ -21,7 +21,7 @@ async def create_card(card: Card):
 async def find_card(card_id: str):
     # return await card_service.get_card(card_id)
     if (card := await card_service.get_card(card_id)) is not None:
-        card['_id'] = card_id
+        card['_id'] = str(card['_id'])
         return card
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Card with ID {card_id} not found")
 
