@@ -22,7 +22,16 @@ class UserService:
     async def delete_user(self, user_id: str) -> bool:
         return await self.user_repository.delete(user_id)
 
-    async def list_cards(self, user_id: str) -> Optional[Any]:
+    async def list_cards(self, user_id: str) -> list:
         cards = await self.user_repository.list_cards(user_id)
-        return list(cards)
 
+        # Repositorio devuelve BSON ObjectId, que Pydantic no puede serializar a JSON por defecto .
+        # Convertimos el  '_id' (ObjectId)  a string 'id'.
+        processed_cards = []
+        for card in cards:
+            
+            if '_id' in card:
+                card['id'] = str(card.pop('_id'))
+            processed_cards.append(card)
+
+        return processed_cards

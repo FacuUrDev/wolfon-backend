@@ -21,16 +21,13 @@ async def create_user(user: User = Body(...)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists")
 
 
-@router.get("/list_cards/{user_id}", response_description="List cards for a user")
-async def list_cards(user_id: str):
+@router.get("/{user_id}/cards", response_description="List all cards for a specific user", response_model=List[Card])
+async def list_user_cards(user_id: str):
     log.info("Listing cards for user", user_id=user_id)
-    if (cards := await user_service.list_cards(user_id)) is not None:
-        cards_list = []
-        for i, card in enumerate(cards):
-            # card['_id'] = str(card['_id'])
-            cards_list.append(card)
-        return cards_list
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
+    cards = await user_service.list_cards(user_id)
+    if cards is not None:
+        return cards
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {user_id} not found")
 
 
 @router.get("/{id}", response_description="Get a single user by id")
