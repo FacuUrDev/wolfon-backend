@@ -1,5 +1,8 @@
 tmp/
-.idea
+.idea/
 *.env
 *.html
-*__pycache__*
+__pycache__/
+
+# Scripts de ejecución local
+run_backend.bat
