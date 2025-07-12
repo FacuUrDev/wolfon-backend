@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, List
+from typing import Optional, List, Any
 
 from src.domain.models import User
 
@@ -14,13 +14,17 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    async def update(self, user_id: str, user: User) -> Optional[User]:
+    async def update(self, user: User) -> Optional[User]:
         pass
 
     @abstractmethod
-    async def delete(self, user_id: str) -> bool:
+    async def delete(self, user_id: str) -> Any:
         pass
 
     @abstractmethod
     async def list_cards(self, user_id: str) -> Optional[List[User]]:
+        pass
+
+    @abstractmethod
+    async def list_users(self):
         pass

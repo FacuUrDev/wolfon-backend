@@ -14,7 +14,7 @@ class TestCardsCRUD:
         assert data["user_id"] == card_data["user_id"]
 
         # Verify card was created in the database
-        card_in_db = test_db["cards"].find_one({"id": data["id"]})
+        card_in_db = test_db["cards"].find_one({"_id": data["_id"]})
         assert card_in_db is not None
         assert card_in_db["title"] == card_data["title"]
         assert card_in_db["user_id"] == card_data["user_id"]
@@ -36,8 +36,8 @@ class TestCardsCRUD:
 
         # Verify the inserted card is in the response
         if len(data) > 0:
-            card_ids = [card["id"] for card in data]
-            assert str(card_data["id"]) in card_ids
+            card_ids = [card["_id"] for card in data]
+            assert card_data["_id"] in card_ids
 
     def test_find_card(self, test_app, test_db, card_data):
         """Test finding a card by ID"""
@@ -45,12 +45,12 @@ class TestCardsCRUD:
         test_db["cards"].insert_one(card_data)
 
         # Test finding a card by ID
-        response = test_app.get(f"/card/{card_data['id']}")
+        response = test_app.get(f"/card/{card_data['_id']}")
 
         # Check response status code and data
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
-        assert data["id"] == str(card_data["id"])
+        assert data["_id"] == card_data["_id"]
         assert data["title"] == card_data["title"]
         assert data["user_id"] == card_data["user_id"]
 
@@ -69,19 +69,19 @@ class TestCardsCRUD:
 
         # Updated card data
         updated_data = {
-            "id": str(card_data["id"]),
+            "_id": card_data["_id"],
             "user_id": card_data["user_id"],
             "title": "Updated Card Title"
         }
 
         # Test updating a card
-        response = test_app.put(f"/card/{card_data['id']}", json=updated_data)
+        response = test_app.put(f"/card/{card_data['_id']}", json=updated_data)
 
         # Check response status code
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
         # Verify card was updated in the database
-        card_in_db = test_db["cards"].find_one({"id": card_data["id"]})
+        card_in_db = test_db["cards"].find_one({"_id": card_data["_id"]})
         log.info('test_update_card', card_in_db=card_in_db)
         assert card_in_db is not None
         assert card_in_db["title"] == updated_data["title"]
@@ -93,7 +93,7 @@ class TestCardsCRUD:
 
         # Updated card data
         updated_data = {
-            "id": non_existent_id,
+            "_id": non_existent_id,
             "user_id": card_data["user_id"],
             "title": "Updated Card Title"
         }
@@ -109,13 +109,13 @@ class TestCardsCRUD:
         test_db["cards"].insert_one(card_data)
 
         # Test deleting a card
-        response = test_app.delete(f"/card/{card_data['id']}")
+        response = test_app.delete(f"/card/{card_data['_id']}")
 
         # Check response status code
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
         # Verify card was deleted from the database
-        card_in_db = test_db["cards"].find_one({"id": card_data["id"]})
+        card_in_db = test_db["cards"].find_one({"_id": card_data["_id"]})
         assert card_in_db is None
 
     def test_delete_card_not_found(self, test_app):

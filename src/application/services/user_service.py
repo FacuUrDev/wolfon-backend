@@ -26,3 +26,12 @@ class UserService:
         cards = await self.user_repository.list_cards(user_id)
         return list(cards)
 
+    async def list_users(self):
+        return await self.user_repository.list_users()
+
+if __name__ == '__main__':
+    from src.infrastructure.repositories.mongo_user_repository import MongoUserRepository
+    from src.infrastructure.dependencies.database import get_database
+    import asyncio
+    user_service = UserService(user_repository=MongoUserRepository(get_database()))
+    asyncio.run(user_service.list_users())

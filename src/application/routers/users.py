@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 from fastapi import APIRouter, Body, Request, Response, HTTPException, status
 
@@ -32,15 +32,23 @@ async def list_cards(user_id: str):
         return cards_list
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
 
+@router.get("/list", response_description="List all users")
+async def list_users():
+    users_list = await user_service.list_users()
+    for i, user in enumerate(users_list):
+        user['_id'] = str(user['_id'])
+    return users_list
+    # return await user_service.list_users()
 
-@router.get("/{id}", response_description="Get a single user by id")
-async def find_user(id: str):
-    user = await user_service.get_user(id)
+@router.get("/{user_id}", response_description="Get a single user by id")
+async def find_user(user_id: str):
+    log.info("Finding user", user_id=user_id)
+    user = await user_service.get_user(user_id)
     log.info("User found", user=user)
     if user is not None:
-        user['_id'] = id
+        # user['_id'] = user_id
         return user
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {user_id} not found")
 
 
 @router.put("/{id}", response_description="Update a user")
