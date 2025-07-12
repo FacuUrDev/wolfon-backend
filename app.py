@@ -1,11 +1,13 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+# from mangum import Mangum
 from pymongo.mongo_client import MongoClient
+from starlette.responses import RedirectResponse
 
 from src import cards_router, users_router
 from src.infrastructure.config.settings import Settings
-from src.infrastructure.middleware.error_handler import log
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -16,7 +18,13 @@ async def lifespan(app: FastAPI):
     app.mongodb_client.close()
     print("Disconnected from the MongoDB database!")
 
-
 app = FastAPI(lifespan=lifespan)
 app.include_router(cards_router, tags=["cards"], prefix="/card")
 app.include_router(users_router, tags=["users"], prefix="/user")
+
+
+@app.get("/", include_in_schema=False)
+async def docs_redirect():
+    return RedirectResponse(url='/docs')
+
+# lambda_handler = Mangum(app, lifespan="off")

@@ -2,6 +2,8 @@ fastapi~=0.115.14
 pymongo~=4.13.2
 pydantic~=2.11.7
 pydantic-settings~=2.10.1
+pydantic-mongo
 pytest~=8.0.0
-
+uvicorn
 structlog~=25.4.0
+#magnum
