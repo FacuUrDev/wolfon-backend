@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Response, HTTPException, status
 
 from src.application.services.card_service import CardService
-from src.domain.models import Card
+from src.domain.models import Card, CardCreate
 from src.infrastructure.dependencies.database import get_database
 from src.infrastructure.logging.logger import log
 from src.infrastructure.repositories.mongo_card_repository import MongoCardRepository
@@ -11,9 +11,11 @@ card_service = CardService(MongoCardRepository(get_database()))
 
 
 @router.post("/", response_description="Create a new card", status_code=status.HTTP_201_CREATED, response_model=Card)
-async def create_card(card: Card):
+async def create_card(card: CardCreate = Body(...)):
     log.info("Creating new card", card=card)
     new_card = await card_service.create_card(card)
+    if not new_card:
+        raise HTTPException(status_code=500, detail="No se pudo crear la tarjeta en la base de datos.")
     return new_card
 
 
@@ -21,7 +23,7 @@ async def create_card(card: Card):
 async def find_card(card_id: str):
     # return await card_service.get_card(card_id)
     if (card := await card_service.get_card(card_id)) is not None:
-        card['_id'] = card_id
+        card['_id'] = str(card['_id'])
         return card
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Card with ID {card_id} not found")
 

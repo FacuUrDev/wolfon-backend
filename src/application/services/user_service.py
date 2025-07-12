@@ -25,11 +25,11 @@ class UserService:
     async def list_cards(self, user_id: str) -> list:
         cards = await self.user_repository.list_cards(user_id)
 
-        # Repositorio devuelve BSON ObjectId, que Pydantic no puede serializar a JSON por defecto .
+        # Repositorio devuelve BSON ObjectId, que Pydantic no puede serializar a JSON por defecto.
         # Convertimos el  '_id' (ObjectId)  a string 'id'.
         processed_cards = []
         for card in cards:
-            
+            # The frontend interface expects an 'id' field as a string.
             if '_id' in card:
                 card['id'] = str(card.pop('_id'))
             processed_cards.append(card)

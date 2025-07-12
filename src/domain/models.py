@@ -1,3 +1,8 @@
+
+# Modelo para la creación de tarjetas (sin id ni timestamps automáticos)
+from pydantic import BaseModel
+
+
 from datetime import datetime, UTC
 from typing import Optional, Any
 
@@ -29,6 +34,11 @@ class User(BaseModel):
         json_encoders = {ObjectId: str}
         extra = "allow"
         arbitrary_types_allowed = True
+        
+class CardCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    user_id: str
 # test_card = {
 #     "_id": ObjectId("686ef1855ccdea898607335a"),
 #   "user_id": "686ef1855ccdea898607335b",
