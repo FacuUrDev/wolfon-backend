@@ -1,6 +1,6 @@
 from fastapi import status
 
-from src.infrastructure.logging.logger import log
+from src.infrastructure.logging.logger import logger
 
 
 class TestCardsCRUD:
@@ -22,7 +22,7 @@ class TestCardsCRUD:
     def test_list_cards(self, test_app, test_db, card_data, user_data):
         """Test listing cards for a user"""
         # Insert a user and card directly into the database
-        log.info('test_list_cards', card_data=card_data, user_data=user_data)
+        logger.info('test_list_cards', card_data=card_data, user_data=user_data)
         test_db["users"].insert_one(user_data)
         test_db["cards"].insert_one(card_data)
 
@@ -82,7 +82,7 @@ class TestCardsCRUD:
 
         # Verify card was updated in the database
         card_in_db = test_db["cards"].find_one({"_id": card_data["_id"]})
-        log.info('test_update_card', card_in_db=card_in_db)
+        logger.info('test_update_card', card_in_db=card_in_db)
         assert card_in_db is not None
         assert card_in_db["title"] == updated_data["title"]
         assert card_in_db["user_id"] == updated_data["user_id"]

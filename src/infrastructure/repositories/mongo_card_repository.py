@@ -1,23 +1,33 @@
-from bson.objectid import ObjectId
+from datetime import datetime, UTC
+from typing import Any
 
-from src.domain.repositories.card_repository import CardRepository
-from src.infrastructure.logging.logger import log
+from src.application.interfaces.card_interface import CardInterface
+from src.domain.models import Card
+from bson import ObjectId
 
-
-class MongoCardRepository(CardRepository):
+class MongoCardInterface(CardInterface):
     def __init__(self, db):
         self.db = db
 
-    async def create(self, card):
-        log.info('insert_one', card=card.model_dump())
-        self.db.cards.insert_one(card.model_dump())
-        return card.model_dump()
+    async def create(self, card: Any):
+        if isinstance(card, Card):
+            card = card.model_dump()
+        card['created_at'] = datetime.now(UTC)
+        insert_result = self.db.cards.insert_one(card)
+        return insert_result.inserted_id
 
     async def find_by_id(self, card_id):
-        return self.db.cards.find_one({"id": card_id})
+        return self.db.cards.find_one({"_id": ObjectId(card_id)})
 
-    async def update(self, card):
-        return self.db.cards.update_one({"id": card.id}, {"$set": card.model_dump(exclude={'_id'})})
+    async def update(self, card: Any):
+        if isinstance(card, Card):
+            card = card.model_dump()
+        card['updated_at'] = datetime.now(UTC)
+        if '_id' not in card:
+            raise KeyError(f'Expected "_id" key in card data. Received {card}')
+        _id = card['_id']
+        del card['_id']
+        return self.db.cards.update_one({"_id": ObjectId(_id)}, {"$set": card})
 
     async def delete(self, card_id):
-        return self.db.cards.delete_one({"id": card_id})
+        return self.db.cards.delete_one({"_id": ObjectId(card_id)})

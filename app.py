@@ -19,8 +19,8 @@ async def lifespan(app: FastAPI):
     print("Disconnected from the MongoDB database!")
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(cards_router, tags=["cards"], prefix="/card")
-app.include_router(users_router, tags=["users"], prefix="/user")
+app.include_router(cards_router, tags=["cards"], prefix="/cards")
+app.include_router(users_router, tags=["users"], prefix="/users")
 
 
 @app.get("/", include_in_schema=False)
