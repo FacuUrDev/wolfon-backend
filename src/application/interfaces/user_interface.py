@@ -4,7 +4,7 @@ from typing import Optional, List, Any
 from src.domain.models import User
 
 
-class UserRepository(ABC):
+class UserInterface(ABC):
     @abstractmethod
     async def create(self, user: User) -> User:
         pass

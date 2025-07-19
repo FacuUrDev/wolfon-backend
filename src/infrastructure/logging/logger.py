@@ -30,4 +30,4 @@ def configure_logging():
 
 
 configure_logging()
-log = structlog.get_logger()
+logger = structlog.get_logger()

@@ -19,12 +19,15 @@ async def lifespan(app: FastAPI):
     print("Disconnected from the MongoDB database!")
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(cards_router, tags=["cards"], prefix="/card")
-app.include_router(users_router, tags=["users"], prefix="/user")
+app.include_router(cards_router, tags=["cards"], prefix="/cards")
+app.include_router(users_router, tags=["users"], prefix="/users")
+app.include_router(cards_router, tags=["cards"], prefix="/api/cards")
+app.include_router(users_router, tags=["users"], prefix="/api/users")
 
 
 @app.get("/", include_in_schema=False)
 async def docs_redirect():
     return RedirectResponse(url='/docs')
+
 
 # lambda_handler = Mangum(app, lifespan="off")

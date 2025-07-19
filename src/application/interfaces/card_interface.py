@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Any
 
 from src.domain.models import Card
 
 
-class CardRepository(ABC):
+class CardInterface(ABC):
     @abstractmethod
-    async def create(self, card: Card) -> Card:
+    async def create(self, card: Any) -> Card:
         pass
 
     @abstractmethod
@@ -14,7 +14,7 @@ class CardRepository(ABC):
         pass
 
     @abstractmethod
-    async def update(self, card_id: str, card: Card) -> Optional[Card]:
+    async def update(self, card: Any) -> Optional[Card]:
         pass
 
     @abstractmethod

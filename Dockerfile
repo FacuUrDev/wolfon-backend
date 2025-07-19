@@ -11,3 +11,5 @@ COPY app.py ${LAMBDA_TASK_ROOT}
 COPY src ${LAMBDA_TASK_ROOT}/src/
 
 ENTRYPOINT ["fastapi", "run", "app.py", "--proxy-headers", "--port", "80"]
+
+#docker build -f Dockerfile -t wolfon-bakcend . && docker run -p 80:80 -v ./src:/var/task/src --env DATABASE_NAME=wolfon_test --env-file .env --name wolfon-backend wolfon-bakcend

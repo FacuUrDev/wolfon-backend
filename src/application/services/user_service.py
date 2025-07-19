@@ -1,11 +1,11 @@
 from typing import Optional, Any
 
 from src.domain.models import User
-from src.domain.repositories.user_repository import UserRepository
+from src.application.interfaces.user_interface import UserInterface
 
 
 class UserService:
-    def __init__(self, user_repository: UserRepository):
+    def __init__(self, user_repository: UserInterface):
         self.user_repository = user_repository
 
     async def create_user(self, user: User) -> User:
@@ -15,8 +15,7 @@ class UserService:
     async def get_user(self, user_id: str) -> Optional[User]:
         return await self.user_repository.find_by_id(user_id)
 
-    async def update_user(self, user_id: str, user: User) -> Optional[User]:
-        user.id = user_id
+    async def update_user(self, user: User) -> Optional[User]:
         return await self.user_repository.update(user)
 
     async def delete_user(self, user_id: str) -> bool:
@@ -30,8 +29,8 @@ class UserService:
         return await self.user_repository.list_users()
 
 if __name__ == '__main__':
-    from src.infrastructure.repositories.mongo_user_repository import MongoUserRepository
+    from src.infrastructure.repositories.mongo_user_repository import MongoUserInterface
     from src.infrastructure.dependencies.database import get_database
     import asyncio
-    user_service = UserService(user_repository=MongoUserRepository(get_database()))
+    user_service = UserService(user_repository=MongoUserInterface(get_database()))
     asyncio.run(user_service.list_users())
