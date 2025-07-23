@@ -1,11 +1,11 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
 
-from src.infrastructure.logging.logger import log
+from src.infrastructure.logging.logger import logger
 
 
 async def global_exception_handler(request: Request, exc: Exception):
-    log.error(
+    logger.error(
         "Unhandled exception",
         path=request.url.path,
         method=request.method,

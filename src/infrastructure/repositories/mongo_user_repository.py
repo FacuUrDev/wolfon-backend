@@ -1,9 +1,11 @@
 from datetime import UTC, datetime
 from typing import Any
 
-from src.domain.models import User
-from src.application.interfaces.user_interface import UserInterface
 from bson import ObjectId
+
+from src.application.interfaces.user_interface import UserInterface
+from src.domain.user_model import User
+
 
 class MongoUserInterface(UserInterface):
     def __init__(self, db):
@@ -38,7 +40,33 @@ class MongoUserInterface(UserInterface):
     async def list_users(self):
         return list(self.db.users.find({}))
 
+    async def search(self, filter: dict):
+        return list(self.db.users.find(filter))
+
+
 if __name__ == '__main__':
     from src.infrastructure.dependencies.database import get_database
+    from pprint import pp
+
     RUser = MongoUserInterface(get_database())
-    RUser.db.users.find_one({'_id':'6871a6974530f72a169057e3'})
+    RUser.db.users.find_one({'_id': '6871a6974530f72a169057e3'})
+    db = get_database()
+    pp(list(db.users.aggregate([{
+        "$lookup": {
+            "from": "cards",
+            "localField": {"_id": {"$toString": "_id"}},
+            "foreignField": "user_id",
+            "as": "user_card",
+        }
+    }])))
+    pp(list(db.users.aggregate([{
+        "$lookup": {
+            "from": "cards",
+            "let": {"userId": {"$toString": "$_id"}},
+            "pipeline": [
+                {"$match": {"$expr": {"$eq": ["$user_id", "$$userId"]}}}
+            ],
+            "as": "user_cards",
+        }},
+        {"$sort": {"created_at": 1}}
+    ], explain=True)))

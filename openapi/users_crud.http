@@ -1,0 +1,54 @@
+### Create User 1
+POST 127.0.0.1:80/users/
+Content-Type: application/json
+
+{
+  "name": "Exequiel Lobón",
+  "email": "exequiel.lobon@wolfon.com"
+}
+
+
+### subscribe user
+POST 127.0.0.1:80/users/subscribe/
+Content-Type: application/json
+
+{
+  "user_id": "68816e1e4c599bb6cf2de86f",
+  "tier": "pro"
+}
+
+### get user
+GET 127.0.0.1:80/users/68816e1e4c599bb6cf2de86f
+
+
+### check sub
+GET 127.0.0.1:80/users/check_subscription/68816e1e4c599bb6cf2de86f
+
+### cancel sub
+GET 127.0.0.1:80/users/cancel_subscription/68816e1e4c599bb6cf2de86f
+
+### renew sub
+GET 127.0.0.1:80/users/renew_subscription/68816e1e4c599bb6cf2de86f
+
+
+### list users
+GET 127.0.0.1:80/users/list
+
+
+### list cards
+GET 127.0.0.1:80/users/list_cards/68816e1e4c599bb6cf2de86f
+
+
+
+### update users
+PUT 127.0.0.1:80/users/
+Content-Type: application/json
+
+{
+  "_id": "68816e1e4c599bb6cf2de86f",
+  "position": "CEO",
+  "salary": 1234.2
+}
+
+### delete users
+#DELETE 127.0.0.1:80/users/68816e1e4c599bb6cf2de86f

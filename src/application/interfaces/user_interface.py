@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Optional, List, Any
 
-from src.domain.models import User
+from src.domain.user_model import User
 
 
 class UserInterface(ABC):
+    db = None
     @abstractmethod
     async def create(self, user: User) -> User:
         pass

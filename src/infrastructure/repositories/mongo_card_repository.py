@@ -2,7 +2,7 @@ from datetime import datetime, UTC
 from typing import Any
 
 from src.application.interfaces.card_interface import CardInterface
-from src.domain.models import Card
+from src.domain import Card
 from bson import ObjectId
 
 class MongoCardInterface(CardInterface):

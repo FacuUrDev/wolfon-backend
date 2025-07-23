@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Response, HTTPException, status
 
 from src.application.services.card_service import CardService
-from src.domain.models import Card
+from src.domain import Card
 from src.infrastructure import get_database, logger
 from src.infrastructure.repositories.mongo_card_repository import MongoCardInterface
 

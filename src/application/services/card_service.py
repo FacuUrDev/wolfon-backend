@@ -1,6 +1,6 @@
 from typing import Optional
 
-from src.domain.models import Card
+from src.domain import Card
 from src.application.interfaces.card_interface import CardInterface
 from src.infrastructure.logging.logger import logger
 

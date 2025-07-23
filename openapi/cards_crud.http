@@ -1,0 +1,37 @@
+### create card
+POST 127.0.0.1:80/cards/
+Content-Type: application/json
+
+{
+  "user_id": "687c174c500c1817eb7344b7",
+  "title": "Visa",
+  "gastos": 1234.5
+}
+
+<> 2025-07-19T191045.201.json
+
+### get card
+GET 127.0.0.1:80/cards/687c17e5500c1817eb7344b8
+
+<> 2025-07-19T191121.200.json
+
+
+
+### update card
+PUT 127.0.0.1:80/cards/
+Content-Type: application/json
+
+{
+  "_id": "687c17e5500c1817eb7344b8",
+  "ingresos": "5432.1"
+}
+
+
+### delete card
+DELETE 127.0.0.1:80/cards/687c0429adfdc4d462d68f03
+
+<> 2025-07-19T180413.404.json
+
+
+### Search
+GET 127.0.0.1:80/<database>/<field>?<value>

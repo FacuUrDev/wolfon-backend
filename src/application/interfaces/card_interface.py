@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Any
 
-from src.domain.models import Card
+from src.domain import Card
 
 
 class CardInterface(ABC):

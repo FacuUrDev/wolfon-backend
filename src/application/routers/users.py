@@ -1,12 +1,15 @@
 from fastapi import APIRouter, Body, Response, HTTPException, status
 
 from src.application.services.user_service import UserService
-from src.domain.models import User, Card
+from src.domain import User, Card
 from src.infrastructure import get_database, logger
 from src.infrastructure.repositories.mongo_user_repository import MongoUserInterface
+from src.infrastructure.repositories.subscription_repository import SubscriptionRepository
 
 router = APIRouter()
-user_service = UserService(MongoUserInterface(get_database()))
+database = get_database()
+user_service = UserService(MongoUserInterface(database))
+subscription_repository = SubscriptionRepository(database)
 
 
 @router.post("/", response_description="Create a new user", status_code=status.HTTP_201_CREATED, response_model=User)
@@ -48,11 +51,26 @@ async def find_user(user_id: str):
 
 
 @router.put("/", response_description="Update a user")
-async def update_user(user = Body(...)):
+async def update_user(user=Body(...)):
+    logger.info("Updating user", user=user)
     updated_user = await user_service.update_user(user)
     if updated_user.modified_count > 0:
+        logger.info("User updated successfully", user=updated_user)
         return Response(status_code=status.HTTP_204_NO_CONTENT)
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
+    logger.info("User not found", user=user)
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {user} not found")
+
+
+@router.post("/subscribe", response_description="Subscribe a user")
+async def subscribe_user(body=Body(...)):
+    user_id: str = body.get("user_id")
+    tier: str = body.get("tier")
+    valid_from = body.get("valid_from")
+    valid_to = body.get("valid_to")
+    subscribed_user = await user_service.subscribe(user_id, tier, valid_from, valid_to)
+    if subscribed_user.modified_count > 0:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
 
 
 @router.delete("/{id}", response_description="Delete a user")
@@ -62,3 +80,31 @@ async def delete_user(id: str):
         logger.info("User deleted", user=deleted_user)
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {id} not found")
+
+
+@router.get("/check_subscription/{user_id}", response_description="Check subscription status for a user")
+async def check_subscription(user_id: str):
+    user = await user_service.get_user(user_id)
+    if user is not None:
+        return user.get("subscription", {})
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {user_id} not found")
+
+
+@router.get("/cancel_subscription/{user_id}", response_description="Cancel subscription for a user")
+async def cancel_subscription(user_id: str):
+    user = await user_service.get_user(user_id)
+    user["subscription"] = subscription_repository.cancel(user["subscription"])
+    cancelled_user = await user_service.update_user(user)
+    if cancelled_user.modified_count > 0:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {user_id} not found")
+
+
+@router.get("/renew_subscription/{user_id}", response_description="Renew subscription for a user")
+async def renew_subscription(user_id: str):
+    user = await user_service.get_user(user_id)
+    user["subscription"] = subscription_repository.renew(user["subscription"])
+    renewed_user = await user_service.update_user(user)
+    if renewed_user.modified_count > 0:
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
+    return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {user_id} not found")
