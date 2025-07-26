@@ -34,11 +34,11 @@ class MongoUserInterface(UserInterface):
     async def delete(self, user_id: str) -> bool:
         return self.db.users.delete_one({"_id": ObjectId(user_id)})
 
-    async def list_cards(self, user_id: str) -> User:
-        return self.db.cards.find({"user_id": user_id})
+    async def list_cards(self, user_id: str,  page, size=10) -> User:
+        return self.db.cards.find({"user_id": user_id}).skip((page - 1) * size).limit(size)
 
-    async def list_users(self):
-        return list(self.db.users.find({}))
+    async def list_users(self, page, size=10):
+        return self.db.users.find({}).skip((page - 1) * size).limit(size)
 
     async def search(self, filter: dict):
         return list(self.db.users.find(filter))
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     RUser = MongoUserInterface(get_database())
     RUser.db.users.find_one({'_id': '6871a6974530f72a169057e3'})
-    db = get_database()
+    db = get_database("wolfon_dev")
     pp(list(db.users.aggregate([{
         "$lookup": {
             "from": "cards",
@@ -66,7 +66,23 @@ if __name__ == '__main__':
             "pipeline": [
                 {"$match": {"$expr": {"$eq": ["$user_id", "$$userId"]}}}
             ],
-            "as": "user_cards",
+            "as": "cards",
         }},
         {"$sort": {"created_at": 1}}
-    ], explain=True)))
+    ])))
+
+    user_id = "68851b297b4e024b3a91b77b"
+    pp(list(db.users.aggregate([
+        {"$match": {"_id": ObjectId(user_id)}},
+        {
+            "$lookup": {
+                "from": "cards",
+                "let": {"userId": {"$toString": "$_id"}},
+                "pipeline": [
+                    {"$match": {"$expr": {"$eq": ["$user_id", "$$userId"]}}},
+                ],
+                "as": "cards",
+            }
+        },
+        {"$sort": {"created_at": 1}},
+    ])))

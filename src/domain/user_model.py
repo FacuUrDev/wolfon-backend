@@ -1,4 +1,4 @@
-from typing import Any, Annotated
+from typing import Any, Annotated, Optional
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
@@ -13,7 +13,7 @@ ObjectIdCustom = Annotated[
 class User(BaseModel):
     name: str
     email: str
-    subscription: Subscription = Field(None, description="Subscription of the user")
+    subscription: Optional[Subscription] = Field(..., description="Subscription of the user")
 
     class Config:
         extra = "allow"

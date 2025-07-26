@@ -3,8 +3,8 @@ POST 127.0.0.1:80/users/
 Content-Type: application/json
 
 {
-  "name": "Exequiel Lobón",
-  "email": "exequiel.lobon@wolfon.com"
+  "name": "Fulano de tal",
+  "email": "fulano.detal@wolfon.com"
 }
 
 
@@ -13,30 +13,31 @@ POST 127.0.0.1:80/users/subscribe/
 Content-Type: application/json
 
 {
-  "user_id": "68816e1e4c599bb6cf2de86f",
-  "tier": "pro"
+  "user_id": "68851b297b4e024b3a91b77b",
+  "tier": "standard"
 }
 
 ### get user
-GET 127.0.0.1:80/users/68816e1e4c599bb6cf2de86f
+GET 127.0.0.1:80/users/68851b297b4e024b3a91b77b
 
 
 ### check sub
-GET 127.0.0.1:80/users/check_subscription/68816e1e4c599bb6cf2de86f
+GET 127.0.0.1:80/users/check_subscription/68851b297b4e024b3a91b77b
 
 ### cancel sub
-GET 127.0.0.1:80/users/cancel_subscription/68816e1e4c599bb6cf2de86f
+GET 127.0.0.1:80/users/cancel_subscription/68851b297b4e024b3a91b77b
 
 ### renew sub
-GET 127.0.0.1:80/users/renew_subscription/68816e1e4c599bb6cf2de86f
+GET 127.0.0.1:80/users/renew_subscription/68851b297b4e024b3a91b77b
 
 
+### En los comandos de listado por defecto size=10 y page=1
 ### list users
 GET 127.0.0.1:80/users/list
 
 
 ### list cards
-GET 127.0.0.1:80/users/list_cards/68816e1e4c599bb6cf2de86f
+GET 127.0.0.1:80/users/list_cards/68851b297b4e024b3a91b77b
 
 
 
@@ -45,10 +46,10 @@ PUT 127.0.0.1:80/users/
 Content-Type: application/json
 
 {
-  "_id": "68816e1e4c599bb6cf2de86f",
+  "_id": "68851b297b4e024b3a91b77b",
   "position": "CEO",
   "salary": 1234.2
 }
 
 ### delete users
-#DELETE 127.0.0.1:80/users/68816e1e4c599bb6cf2de86f
+#DELETE 127.0.0.1:80/users/68851b297b4e024b3a91b77b

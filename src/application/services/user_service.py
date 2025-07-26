@@ -46,12 +46,12 @@ class UserService:
     async def delete_user(self, user_id: str) -> bool:
         return await self.user_repository.delete(user_id)
 
-    async def list_cards(self, user_id: str) -> Optional[Any]:
-        cards = await self.user_repository.list_cards(user_id)
+    async def list_cards(self, user_id: str, page, size) -> Optional[Any]:
+        cards = await self.user_repository.list_cards(user_id, page, size)
         return list(cards)
 
-    async def list_users(self):
-        return await self.user_repository.list_users()
+    async def list_users(self, page, size):
+        return await self.user_repository.list_users(page, size)
 
 
 if __name__ == '__main__':

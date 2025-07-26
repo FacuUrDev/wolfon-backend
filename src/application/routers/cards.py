@@ -11,7 +11,8 @@ card_service = CardService(MongoCardInterface(get_database()))
 
 @router.post("/", response_description="Create a new card", status_code=status.HTTP_201_CREATED, response_model=Card)
 async def create_card(card: Card):
-    logger.info("Creating new card", card=card)
+    # logger.info("Creating new card", card=card)
+    await logger.ainfo("Creating new card", card=card)
     inserted_id = await card_service.create_card(card)
     card.id = str(inserted_id)
     return card

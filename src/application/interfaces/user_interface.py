@@ -6,6 +6,7 @@ from src.domain.user_model import User
 
 class UserInterface(ABC):
     db = None
+
     @abstractmethod
     async def create(self, user: User) -> User:
         pass
@@ -23,9 +24,9 @@ class UserInterface(ABC):
         pass
 
     @abstractmethod
-    async def list_cards(self, user_id: str) -> Optional[List[User]]:
+    async def list_cards(self, user_id: str, page, size=10) -> Optional[List[User]]:
         pass
 
     @abstractmethod
-    async def list_users(self):
+    async def list_users(self, page, size=10):
         pass

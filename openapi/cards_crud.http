@@ -3,7 +3,7 @@ POST 127.0.0.1:80/cards/
 Content-Type: application/json
 
 {
-  "user_id": "687c174c500c1817eb7344b7",
+  "user_id": "68851b297b4e024b3a91b77b",
   "title": "Visa",
   "gastos": 1234.5
 }
@@ -11,7 +11,7 @@ Content-Type: application/json
 <> 2025-07-19T191045.201.json
 
 ### get card
-GET 127.0.0.1:80/cards/687c17e5500c1817eb7344b8
+GET 127.0.0.1:80/cards/688520351927a530cb24a104
 
 <> 2025-07-19T191121.200.json
 
@@ -22,7 +22,7 @@ PUT 127.0.0.1:80/cards/
 Content-Type: application/json
 
 {
-  "_id": "687c17e5500c1817eb7344b8",
+  "_id": "688520351927a530cb24a104",
   "ingresos": "5432.1"
 }
 
