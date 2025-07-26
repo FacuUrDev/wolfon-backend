@@ -1,7 +1,7 @@
-from typing import Optional
+from typing import Optional, Any
 
-from src.domain import Card
 from src.application.interfaces.card_interface import CardInterface
+from src.domain import Card
 from src.infrastructure.logging.logger import logger
 
 
@@ -23,6 +23,8 @@ class CardService:
     async def delete_card(self, card_id: str) -> bool:
         return await self.card_repository.delete(card_id)
 
+    async def create_many_cards(self, cards: list[dict[str, Any]]):
+        return await self.card_repository.bulk_create(cards)
 #
 # if __name__ == "__main__":
 #     from src.infrastructure.interfaces.mongo_card_repository import MongoCardInterface

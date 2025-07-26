@@ -10,6 +10,42 @@ Content-Type: application/json
 
 <> 2025-07-19T191045.201.json
 
+
+### create cards from an excel xlsx
+POST 127.0.0.1:80/cards/import/file?user_id=68851b297b4e024b3a91b77b
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="test1.xlsx"
+Content-Type: multipart/form-data
+
+< ../test_docs/test1.xlsx
+--WebAppBoundary--
+
+### create cards from an excel xls
+POST 127.0.0.1:80/cards/import/file?user_id=68851b297b4e024b3a91b77b
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="test1.xlsx"
+Content-Type: multipart/form-data
+
+< ../test_docs/test1.xls
+--WebAppBoundary--
+
+### create cards from an excel ods
+POST 127.0.0.1:80/cards/import/file?user_id=68851b297b4e024b3a91b77b
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="test1.xlsx"
+Content-Type: multipart/form-data
+
+< ../test_docs/test1.ods
+--WebAppBoundary--
+
+
+
 ### get card
 GET 127.0.0.1:80/cards/688520351927a530cb24a104
 

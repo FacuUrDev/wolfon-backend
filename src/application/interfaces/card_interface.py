@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Any
+from typing import Optional, Any, List
 
 from src.domain import Card
 
@@ -19,4 +19,7 @@ class CardInterface(ABC):
 
     @abstractmethod
     async def delete(self, card_id: str) -> bool:
+        pass
+
+    async def bulk_create(self, cards: list[dict[str, Any]]):
         pass

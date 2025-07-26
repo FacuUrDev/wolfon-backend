@@ -5,7 +5,10 @@ from src.domain import Card
 from src.infrastructure import get_database, logger
 from src.infrastructure.repositories.mongo_card_repository import MongoCardInterface
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/cards",
+    tags=["cards"]
+)
 card_service = CardService(MongoCardInterface(get_database()))
 
 

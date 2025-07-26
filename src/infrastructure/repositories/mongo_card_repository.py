@@ -31,3 +31,6 @@ class MongoCardInterface(CardInterface):
 
     async def delete(self, card_id):
         return self.db.cards.delete_one({"_id": ObjectId(card_id)})
+
+    async def bulk_create(self, cards: list[dict[str, Any]]):
+        return self.db.cards.insert_many(cards)

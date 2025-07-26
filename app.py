@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from pymongo.mongo_client import MongoClient
 from starlette.responses import RedirectResponse
 
-from src import cards_router, users_router, search_router
+from src import cards_router, users_router, card_import_router
 from src.infrastructure.config.settings import Settings
 
 
@@ -18,17 +18,20 @@ async def lifespan(app: FastAPI):
     app.mongodb_client.close()
     print("Disconnected from the MongoDB database!")
 
+
 app = FastAPI(lifespan=lifespan)
-app.include_router(cards_router, tags=["cards"], prefix="/cards")
-app.include_router(users_router, tags=["users"], prefix="/users")
-app.include_router(cards_router, tags=["cards"], prefix="/api/cards")
-app.include_router(users_router, tags=["users"], prefix="/api/users")
-app.include_router(search_router, tags=["search"], prefix="/api/search")
+app.include_router(cards_router)
+app.include_router(card_import_router)
+app.include_router(users_router)
+
+
+# app.include_router(cards_router, tags=["cards"], prefix="/api/cards")
+# app.include_router(users_router, tags=["users"], prefix="/api/users")
+# app.include_router(search_router, tags=["search"], prefix="/api/search")
 
 
 @app.get("/", include_in_schema=False)
 async def docs_redirect():
     return RedirectResponse(url='/docs')
-
 
 # lambda_handler = Mangum(app, lifespan="off")

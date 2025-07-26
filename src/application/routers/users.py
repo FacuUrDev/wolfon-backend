@@ -6,7 +6,10 @@ from src.infrastructure import get_database, logger
 from src.infrastructure.repositories.mongo_user_repository import MongoUserInterface
 from src.infrastructure.repositories.subscription_repository import SubscriptionRepository
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/users",
+    tags=["users"]
+)
 database = get_database()
 logger.info("Initializing user service", database=database)
 user_service = UserService(MongoUserInterface(database))
