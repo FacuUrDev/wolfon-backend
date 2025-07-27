@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Any, List
+from typing import Optional, Any, List, Union
 
 from src.domain import Card
 
@@ -10,7 +10,7 @@ class CardInterface(ABC):
         pass
 
     @abstractmethod
-    async def find_by_id(self, card_id: str) -> Optional[Card]:
+    async def find_by_id(self, card_id: Union[str, list[str]]) -> Optional[Card]:
         pass
 
     @abstractmethod

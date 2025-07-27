@@ -1,8 +1,12 @@
+import io
 from datetime import datetime, UTC, timedelta
 from typing import Optional, Any
 
+from pandas import DataFrame
+
 from src.application.interfaces.user_interface import UserInterface
 from src.domain import User, Subscription
+from src.infrastructure.logging.logger import logger
 # from src.domain.subscription_model import SubscriptionState
 from src.infrastructure.repositories.subscription_repository import SubscriptionRepository
 
@@ -52,6 +56,21 @@ class UserService:
 
     async def list_users(self, page, size):
         return await self.user_repository.list_users(page, size)
+
+    async def export_cards(self, user_id: str) -> bytes:
+        page = 1
+        size = 100
+        cards = []
+        _cards = await self.list_cards(user_id, page, size)
+        while len(_cards) > 0:
+            cards.extend(_cards)
+            page += 1
+            _cards = await self.list_cards(user_id, page, size)
+        logger.info("Exporting cards", cards=len(cards))
+        with io.BytesIO() as buffer:
+            DataFrame(cards).to_excel(buffer, index=False)
+            buffer.seek(0)
+            return buffer.read()
 
 
 if __name__ == '__main__':

@@ -45,6 +45,9 @@ Content-Type: multipart/form-data
 --WebAppBoundary--
 
 
+### Export user cards
+GET 127.0.0.1:80/users/export_cards/68851b297b4e024b3a91b77b
+
 
 ### get card
 GET 127.0.0.1:80/cards/688520351927a530cb24a104

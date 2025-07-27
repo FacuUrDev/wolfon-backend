@@ -1,5 +1,5 @@
 from datetime import datetime, UTC
-from typing import Any
+from typing import Any, Union
 
 from src.application.interfaces.card_interface import CardInterface
 from src.domain import Card
@@ -16,7 +16,9 @@ class MongoCardInterface(CardInterface):
         insert_result = self.db.cards.insert_one(card)
         return insert_result.inserted_id
 
-    async def find_by_id(self, card_id):
+    async def find_by_id(self, card_id: Union[str, list[str]]):
+        if isinstance(card_id, list):
+            return self.db.cards.find({"_id": {"$in": [ObjectId(i) for i in card_id]}})
         return self.db.cards.find_one({"_id": ObjectId(card_id)})
 
     async def update(self, card: Any):

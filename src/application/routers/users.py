@@ -113,3 +113,15 @@ async def renew_subscription(user_id: str):
     if renewed_user.modified_count > 0:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with ID {user_id} not found")
+
+
+@router.get("/export_cards/{user_id}", response_description="Export cards for a user")
+async def export_cards(user_id: str):
+    excel_bytes = await user_service.export_cards(user_id)
+    return Response(
+        content=excel_bytes,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={
+            "Content-Disposition": f"attachment; filename=cards_{user_id}.xlsx"
+        }
+    )

@@ -1,7 +1,7 @@
 import io
 from time import perf_counter
 from typing import List
-
+from datetime import datetime, UTC
 import pandas as pd
 
 from src.application.services.card_service import CardService
@@ -63,6 +63,7 @@ class CardImportService:
             card = Card(
                 **row,
                 user_id=user_id,
+                created_at=datetime.now(UTC)
             ).model_dump()
             cards.append(card)
         process_time = perf_counter()

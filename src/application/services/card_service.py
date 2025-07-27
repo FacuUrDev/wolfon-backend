@@ -1,4 +1,4 @@
-from typing import Optional, Any
+from typing import Optional, Any, Union
 
 from src.application.interfaces.card_interface import CardInterface
 from src.domain import Card
@@ -13,7 +13,7 @@ class CardService:
         logger.info("Creating new card", card=card)
         return await self.card_repository.create(card)
 
-    async def get_card(self, card_id: str) -> Optional[Card]:
+    async def get_card(self, card_id: Union[str, list[str]]) -> Union[Card, list[Card], None]:
         return await self.card_repository.find_by_id(card_id)
 
     async def update_card(self, card: Card) -> Optional[Card]:

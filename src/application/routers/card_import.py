@@ -1,11 +1,7 @@
-import json
-from typing import Any
-
-from fastapi import APIRouter, UploadFile, File, Response, status, HTTPException
+from fastapi import APIRouter, UploadFile, File, status, HTTPException
 
 from src.application.routers.cards import card_service
 from src.application.services.card_import_service import CardImportService
-from src.infrastructure.logging.logger import logger
 
 import_service = CardImportService(card_service)
 
